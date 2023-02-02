@@ -53,4 +53,4 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQM
-        run: ./gradlew build -x test sonarqube --info -Dsonar.login=$SONAR_TOKEN
+        run: ./gradlew build -x test sonar --info -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=JoaoCipriano_banking-kata-java -Dsonar.organization=joaocipriano
