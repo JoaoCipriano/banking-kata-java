@@ -1,0 +1,60 @@
+name: SonarCloud Pull Request Decoration
+on: [pull_request]
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
+      - name: Docker Compose
+        run: docker-compose --env-file=env/.env.local up -d
+
+      - name: Update Packages
+        run:
+          sudo apt-get update
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          PULL_RESQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
+          TARGET_BRANCH_NAME: ${{ github.ref_name }}
+          POSTGRES_URL: jdbc:postgresql://localhost:5400/banking_kata_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: admin
+          MONGO_INITDB_ROOT_USERNAME: rootuser
+          MONGO_INITDB_ROOT_PASSWORD: rootpass
+          ME_CONFIG_MONGODB_ADMINUSERNAME: rootuser
+          ME_CONFIG_MONGODB_ADMINPASSWORD: rootpass
+          ME_CONFIG_MONGODB_SERVER: mongodb
+          KEYCLOAK_REALM_URL: http://localhost:10000/auth/realms/banking-kata
+          KEYCLOAK_TEST_CLIENT_ID: test-client
+          KEYCLOAK_TEST_CLIENT_SECRET: B9N1WDFFMuZmYuEzXSbRC739YGaE7kb5
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQM
+        run: ./gradlew build sonar --info -Dsonar.login=$SONAR_TOKEN -Dsonar.pullrequest.key=$PULL_REQUEST_NUMBER -Dsonar.pullrequest.branch=$SOURCE_BRANCH_NAME sonar.pullrequest.base=$TARGET_BRANCH_NAME
