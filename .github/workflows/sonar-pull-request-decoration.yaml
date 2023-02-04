@@ -35,6 +35,19 @@ jobs:
 #          path: ~/.gradle/caches
 #          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
 #          restore-keys: ${{ runner.os }}-gradle
+      - name: Retrieve pull request HEAD ref
+        id: retrieve_pr_head_ref
+        run: |
+          if [$REF == 'refs/heads/master']
+          then
+              echo "::set-output name=prerelease::true"
+          else
+              echo "::set-output name=prerelease::false"
+          fi
+        env:
+          REF: ${{ github.ref }}
+          SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+          TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
 
       - name: Build and analyze
         env:
@@ -45,6 +58,7 @@ jobs:
           TARGET_BRANCH_NAME: ${{ github.base_ref }}
           SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
           TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
+          SOURCE_BRANCH_BY_OUTPUT: ${{ steps.retrieve_pr_head_ref.outputs.prerelease }}
           POSTGRES_URL: jdbc:postgresql://localhost:5400/banking_kata_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: admin
@@ -60,4 +74,4 @@ jobs:
           REDIS_PORT: 6379
           REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQM
 #        run: ./gradlew build sonar --info -Dsonar.login=$SONAR_TOKEN -Dsonar.pullrequest.key=$PULL_REQUEST_NUMBER -Dsonar.pullrequest.branch=$SOURCE_BRANCH_NAME -Dsonar.pullrequest.base=$TARGET_BRANCH_NAME
-        run: echo SOURCE_BRANCH_FULL_NAME ${SOURCE_BRANCH_FULL_NAME} TARGET_BRANCH_FULL_NAME ${TARGET_BRANCH_FULL_NAME}
+        run: echo SOURCE_BRANCH_FULL_NAME ${SOURCE_BRANCH_FULL_NAME} SOURCE_BRANCH_BY_OUTPUT ${SOURCE_BRANCH_BY_OUTPUT}
