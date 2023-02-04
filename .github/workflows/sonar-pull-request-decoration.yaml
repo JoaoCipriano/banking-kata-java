@@ -58,4 +58,4 @@ jobs:
           REDIS_PORT: 6379
           REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQM
 #        run: ./gradlew build sonar --info -Dsonar.login=$SONAR_TOKEN -Dsonar.pullrequest.key=$PULL_REQUEST_NUMBER -Dsonar.pullrequest.branch=$SOURCE_BRANCH_NAME -Dsonar.pullrequest.base=$TARGET_BRANCH_NAME
-        run: echo ${PULL_REQUEST_NUMBER} ${SOURCE_BRANCH_NAME} ${TARGET_BRANCH_NAME} ${GITHUB_BASE_REF}
+        run: echo ${PULL_REQUEST_NUMBER} ${SOURCE_BRANCH_NAME} ${TARGET_BRANCH_NAME} ${GITHUB_HEAD_REF} ${GITHUB_BASE_REF}
