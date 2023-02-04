@@ -41,8 +41,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-          SOURCE_BRANCH_NAME: ${GITHUB_HEAD_REF}
-          TARGET_BRANCH_NAME: ${GITHUB_BASE_REF}
+          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
+          TARGET_BRANCH_NAME: ${{ github.base_ref }}
           POSTGRES_URL: jdbc:postgresql://localhost:5400/banking_kata_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: admin
