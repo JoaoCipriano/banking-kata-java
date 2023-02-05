@@ -42,7 +42,9 @@ jobs:
           then
               echo "prerelease=true" >> $GITHUB_OUTPUT
           else
-              headRef=$SOURCE_BRANCH_FULL_NAME.split("/")[0]:$SOURCE_BRANCH_NAME
+              IFS='/'
+              read -r -a strarr <<< "$SOURCE_BRANCH_FULL_NAME"
+              headRef="${strarr[0]}:${strarr[1]}"
               echo "prerelease=$headRef" >> $GITHUB_OUTPUT
           fi
         env:
