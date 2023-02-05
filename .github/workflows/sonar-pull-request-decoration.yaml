@@ -41,20 +41,31 @@ jobs:
           fetch-depth: '0'
       - name: Retrieve pull request HEAD ref
         id: retrieve_pr_head_ref
+        # full_name.base[0] != full_name.head[0]
         run: |
-          if [$REF == 'refs/heads/master']; then
-              echo "prerelease=true" >> $GITHUB_OUTPUT
+          IFS='/'
+          
+          read -r -a strarr1 <<< "$SOURCE_BRANCH_FULL_NAME"
+          sourceRepoOwner="${strarr1[0]}"
+          sourceBranchName="${strarr1[1]}"
+          fullHeadRef="${strarr1[0]}:${strarr1[1]}"
+          echo sourceRepoOwner "$sourceRepoOwner" sourceBranchName "$sourceBranchName"
+          
+          read -r -a strarr2 <<< "$TARGET_BRANCH_FULL_NAME"
+          targetRepoOwner=${strarr2[0]}
+          targetBranchName="${strarr2[1]}"
+          echo targetRepoOwner "$targetRepoOwner" targetBranchName "$targetBranchName"
+          
+          if ["$targetRepoOwner" == "$sourceRepoOwner"]; then
+              echo using source branch name "$sourceBranchName"
+              echo "headRef=$sourceBranchName" >> $GITHUB_OUTPUT
           else
-              IFS='/'
-              read -r -a strarr <<< "$SOURCE_BRANCH_FULL_NAME"
-              headRef="${strarr[0]}:${strarr[1]}"
-              echo "$headRef"
-              echo "prerelease=$headRef" >> "$GITHUB_OUTPUT"
+              echo using full head ref "$fullHeadRef"
+              echo "headRef=$fullHeadRef" >> $GITHUB_OUTPUT
           fi
         env:
           REF: ${{ github.ref }}
           SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
-          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
           TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
 
       - name: Build and analyze
