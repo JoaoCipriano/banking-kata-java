@@ -42,11 +42,13 @@ jobs:
           then
               echo "prerelease=true" >> $GITHUB_OUTPUT
           else
-              echo "prerelease=false" >> $GITHUB_OUTPUT
+              headRef=$SOURCE_BRANCH_FULL_NAME.split("/")[0]:$SOURCE_BRANCH_NAME
+              echo "prerelease=$headRef" >> $GITHUB_OUTPUT
           fi
         env:
           REF: ${{ github.ref }}
           SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
           TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
 
       - name: Build and analyze
