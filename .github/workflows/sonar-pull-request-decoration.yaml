@@ -45,7 +45,7 @@ jobs:
               read -r -a strarr <<< "$SOURCE_BRANCH_FULL_NAME"
               headRef="${strarr[0]}:${strarr[1]}"
               echo "$headRef"
-              echo "prerelease=$headRef" >> $GITHUB_OUTPUT
+              echo "prerelease=$headRef" >> $env:GITHUB_OUTPUT
           fi
         env:
           REF: ${{ github.ref }}
