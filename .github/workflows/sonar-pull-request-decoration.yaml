@@ -45,28 +45,29 @@ jobs:
         run: |
           IFS='/'
           
-          read -r -a strarr1 <<< "$SOURCE_BRANCH_FULL_NAME"
+          read -r -a strarr1 <<< "$SOURCE_REPO_FULL_NAME"
           sourceRepoOwner="${strarr1[0]}"
-          sourceBranchName="${strarr1[1]}"
-          fullHeadRef="${strarr1[0]}:${strarr1[1]}"
-          echo sourceRepoOwner "$sourceRepoOwner" sourceBranchName "$sourceBranchName"
+          sourceRepoName="${strarr1[1]}"
+          fullHeadRef="${strarr1[0]}:${SOURCE_BRANCH_NAME}"
+          echo sourceRepoOwner "$sourceRepoOwner" sourceRepoName "$sourceRepoName"
           
-          read -r -a strarr2 <<< "$TARGET_BRANCH_FULL_NAME"
+          read -r -a strarr2 <<< "$TARGET_REPO_FULL_NAME"
           targetRepoOwner=${strarr2[0]}
-          targetBranchName="${strarr2[1]}"
-          echo targetRepoOwner "$targetRepoOwner" targetBranchName "$targetBranchName"
+          targetRepoName="${strarr2[1]}"
+          echo targetRepoOwner "$targetRepoOwner" targetRepoName "$targetRepoName"
           
           if ["$targetRepoOwner" == "$sourceRepoOwner"]; then
               echo using source branch name "$sourceBranchName"
-              echo "headRef=$sourceBranchName" >> $GITHUB_OUTPUT
+              echo "headRef=$SOURCE_BRANCH_NAME" >> "$GITHUB_OUTPUT"
           else
               echo using full head ref "$fullHeadRef"
-              echo "headRef=$fullHeadRef" >> $GITHUB_OUTPUT
+              echo "headRef=$fullHeadRef" >> "$GITHUB_OUTPUT"
           fi
         env:
           REF: ${{ github.ref }}
-          SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
-          TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
+          SOURCE_REPO_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+          TARGET_REPO_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
+          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
 
       - name: Build and analyze
         env:
