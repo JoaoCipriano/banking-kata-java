@@ -35,6 +35,7 @@ jobs:
 #          path: ~/.gradle/caches
 #          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
 #          restore-keys: ${{ runner.os }}-gradle
+      - uses: actions/checkout@v3
       - name: Retrieve pull request HEAD ref
         id: retrieve_pr_head_ref
         run: |
@@ -45,7 +46,7 @@ jobs:
               read -r -a strarr <<< "$SOURCE_BRANCH_FULL_NAME"
               headRef="${strarr[0]}:${strarr[1]}"
               echo "$headRef"
-              echo "prerelease=$headRef" >> $GITHUB_ENV
+              echo "prerelease=$headRef" >> $GITHUB_OUTPUT
           fi
         env:
           REF: ${{ github.ref }}
@@ -62,8 +63,7 @@ jobs:
           TARGET_BRANCH_NAME: ${{ github.base_ref }}
           SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
           TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
-#          SOURCE_BRANCH_BY_OUTPUT: ${{ steps.retrieve_pr_head_ref.outputs.prerelease }}
-          SOURCE_BRANCH_BY_OUTPUT: ${{ env.prerelease }}
+          SOURCE_BRANCH_BY_OUTPUT: ${{ steps.retrieve_pr_head_ref.outputs.prerelease }}
           POSTGRES_URL: jdbc:postgresql://localhost:5400/banking_kata_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: admin
