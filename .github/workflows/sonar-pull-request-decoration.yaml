@@ -35,7 +35,10 @@ jobs:
 #          path: ~/.gradle/caches
 #          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
 #          restore-keys: ${{ runner.os }}-gradle
-      - uses: actions/checkout@v3
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
       - name: Retrieve pull request HEAD ref
         id: retrieve_pr_head_ref
         run: |
