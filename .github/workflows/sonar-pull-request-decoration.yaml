@@ -38,13 +38,13 @@ jobs:
       - name: Retrieve pull request HEAD ref
         id: retrieve_pr_head_ref
         run: |
-          if [$REF == 'refs/heads/master']
-          then
+          if [$REF == 'refs/heads/master']; then
               echo "prerelease=true" >> $GITHUB_OUTPUT
           else
               IFS='/'
               read -r -a strarr <<< "$SOURCE_BRANCH_FULL_NAME"
               headRef="${strarr[0]}:${strarr[1]}"
+              echo "$headRef"
               echo "prerelease=$headRef" >> $GITHUB_OUTPUT
           fi
         env:
