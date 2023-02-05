@@ -21,6 +21,7 @@ public class RedisConfiguration {
     LettuceConnectionFactory lettuceConnectionFactory() {
         var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setUsername("default");
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setPassword(password);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);

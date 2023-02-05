@@ -35,14 +35,50 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
+#      - name: Checkout Branch
+#        uses: actions/checkout@v3
+#        with:
+#          fetch-depth: '0'
+      - name: Retrieve pull request HEAD ref
+        id: retrieve_pr_head_ref
+        run: |
+          IFS='/'
+          
+          read -r -a strarr1 <<< "$SOURCE_REPO_FULL_NAME"
+          sourceRepoOwner="${strarr1[0]}"
+          sourceRepoName="${strarr1[1]}"
+          fullHeadRef="${strarr1[0]}:${SOURCE_BRANCH_NAME}"
+          echo sourceRepoOwner "$sourceRepoOwner" sourceRepoName "$sourceRepoName"
+          
+          read -r -a strarr2 <<< "$TARGET_REPO_FULL_NAME"
+          targetRepoOwner=${strarr2[0]}
+          targetRepoName="${strarr2[1]}"
+          echo targetRepoOwner "$targetRepoOwner" targetRepoName "$targetRepoName"
+          
+          if [ "$targetRepoOwner" == "$sourceRepoOwner" ]
+          then
+              echo using source branch name "$SOURCE_BRANCH_NAME"
+              echo "headRef=$SOURCE_BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          else
+              echo using full head ref "$fullHeadRef"
+              echo "headRef=$fullHeadRef" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          SOURCE_REPO_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+          TARGET_REPO_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
+          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
 
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
-          TARGET_BRANCH_NAME: ${{ github.ref_name }}
+#          SOURCE_BRANCH_NAME: ${{ github.head_ref }}
+          SOURCE_BRANCH_NAME: ${{ steps.retrieve_pr_head_ref.outputs.headRef }}
+          TARGET_BRANCH_NAME: ${{ github.base_ref }}
+#          SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+#          TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
+#          SOURCE_BRANCH_BY_OUTPUT: ${{ steps.retrieve_pr_head_ref.outputs.headRef }}
           POSTGRES_URL: jdbc:postgresql://localhost:5400/banking_kata_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: admin
@@ -56,6 +92,6 @@ jobs:
           KEYCLOAK_TEST_CLIENT_SECRET: B9N1WDFFMuZmYuEzXSbRC739YGaE7kb5
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-          REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQM
-#        run: ./gradlew build sonar --info -Dsonar.login=$SONAR_TOKEN -Dsonar.pullrequest.key=$PULL_REQUEST_NUMBER -Dsonar.pullrequest.branch=$SOURCE_BRANCH_NAME -Dsonar.pullrequest.base=$TARGET_BRANCH_NAME
-        run: echo ${PULL_REQUEST_NUMBER} ${SOURCE_BRANCH_NAME} ${TARGET_BRANCH_NAME}
+          REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQMk
+        run: ./gradlew build sonar --info -Dsonar.login=$SONAR_TOKEN -Dsonar.pullrequest.key=$PULL_REQUEST_NUMBER -Dsonar.pullrequest.branch=$SOURCE_BRANCH_NAME -Dsonar.pullrequest.base=$TARGET_BRANCH_NAME
+#        run: echo SOURCE_BRANCH_FULL_NAME ${SOURCE_BRANCH_FULL_NAME} SOURCE_BRANCH_BY_OUTPUT ${SOURCE_BRANCH_BY_OUTPUT}
