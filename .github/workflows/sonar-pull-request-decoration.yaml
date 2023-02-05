@@ -56,7 +56,7 @@ jobs:
           targetRepoName="${strarr2[1]}"
           echo targetRepoOwner "$targetRepoOwner" targetRepoName "$targetRepoName"
           
-          if ["$targetRepoOwner" == "$sourceRepoOwner"]
+          if [ "$targetRepoOwner" == "$sourceRepoOwner" ]
           then
               echo using source branch name "$sourceBranchName"
               echo "headRef=$SOURCE_BRANCH_NAME" >> "$GITHUB_OUTPUT"
