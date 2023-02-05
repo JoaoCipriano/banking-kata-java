@@ -208,4 +208,3 @@ Our contributors are:
 
 If you'd like to contribute, see instructions here https://github.com/valentinacupac/banking-kata-java/blob/main/CONTRIBUTING.md
 
-
