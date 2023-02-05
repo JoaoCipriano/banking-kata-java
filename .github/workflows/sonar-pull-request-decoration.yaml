@@ -79,7 +79,7 @@ jobs:
           TARGET_BRANCH_NAME: ${{ github.base_ref }}
           SOURCE_BRANCH_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
           TARGET_BRANCH_FULL_NAME: ${{ github.event.pull_request.base.repo.full_name }}
-          SOURCE_BRANCH_BY_OUTPUT: ${{ steps.retrieve_pr_head_ref.outputs.prerelease }}
+          SOURCE_BRANCH_BY_OUTPUT: ${{ steps.retrieve_pr_head_ref.outputs.headRef }}
           POSTGRES_URL: jdbc:postgresql://localhost:5400/banking_kata_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: admin
