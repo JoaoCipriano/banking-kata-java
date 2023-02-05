@@ -58,7 +58,7 @@ jobs:
           
           if [ "$targetRepoOwner" == "$sourceRepoOwner" ]
           then
-              echo using source branch name "$sourceBranchName"
+              echo using source branch name "$SOURCE_BRANCH_NAME"
               echo "headRef=$SOURCE_BRANCH_NAME" >> "$GITHUB_OUTPUT"
           else
               echo using full head ref "$fullHeadRef"
