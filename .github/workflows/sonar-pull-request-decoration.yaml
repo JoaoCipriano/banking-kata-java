@@ -92,6 +92,6 @@ jobs:
           KEYCLOAK_TEST_CLIENT_SECRET: B9N1WDFFMuZmYuEzXSbRC739YGaE7kb5
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-          REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQMk
+          REDIS_PASSWORD: b4EA2xC6LlKnlizPu9bwRRrQM
         run: ./gradlew build sonar --info -Dsonar.login=$SONAR_TOKEN -Dsonar.pullrequest.key=$PULL_REQUEST_NUMBER -Dsonar.pullrequest.branch=$SOURCE_BRANCH_NAME -Dsonar.pullrequest.base=$TARGET_BRANCH_NAME
 #        run: echo SOURCE_BRANCH_FULL_NAME ${SOURCE_BRANCH_FULL_NAME} SOURCE_BRANCH_BY_OUTPUT ${SOURCE_BRANCH_BY_OUTPUT}
