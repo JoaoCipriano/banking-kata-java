@@ -1,5 +1,6 @@
 package com.optivem.kata.banking.adapter.driven.persistence.redis.configurations;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
+@Slf4j
 public class RedisConfiguration {
 
     @Value("${spring.redis.host}")
@@ -19,6 +21,7 @@ public class RedisConfiguration {
 
     @Bean
     LettuceConnectionFactory lettuceConnectionFactory() {
+        log.info("REDIS Configuration, host: " + host + " port: " + port + " password: " + password);
         var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
