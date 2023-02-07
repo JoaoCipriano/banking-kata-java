@@ -58,4 +58,10 @@ public class RedisBankAccountStorage implements BankAccountStorage {
             dataAccessor.save(updatedBankAccountModel);
         };
     }
+
+    public String methodWithProblems(Optional<String> text) {
+        System.out.println(text.get());
+        return text.get();
+    }
+    RedisBankAccountStorage
 }
