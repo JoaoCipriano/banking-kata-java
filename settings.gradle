@@ -18,7 +18,9 @@ include 'adapter-time-fake'
 include 'adapter-time-system'
 
 include 'adapter-restapi-spring'
-include 'adapter-thirdparty-external'
+include 'adapter-thirdparty-real'
 include 'z-customer-microservice'
 include 'z-thirdparty-provider-contracts'
+include 'adapter-microservice-real'
+include 'adapter-microservice-fake'
 

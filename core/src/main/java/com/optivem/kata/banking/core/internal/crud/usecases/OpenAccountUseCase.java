@@ -11,8 +11,8 @@ import com.optivem.kata.banking.core.ports.driver.exceptions.ValidationMessages;
 import static com.optivem.kata.banking.core.internal.crud.common.Guard.guard;
 
 public class OpenAccountUseCase implements Command.Handler<OpenAccountRequest, OpenAccountResponse> {
-    private NationalIdentityProvider nationalIdentityProvider;
-    private CustomerProvider customerProvider;
+    private NationalIdentityGateway nationalIdentityGateway;
+    private CustomerGateway customerGateway;
     private BankAccountStorage bankAccountStorage;
     private AccountIdGenerator accountIdGenerator;
     private AccountNumberGenerator accountNumberGenerator;
@@ -20,9 +20,9 @@ public class OpenAccountUseCase implements Command.Handler<OpenAccountRequest, O
 
     private EventBus eventBus;
 
-    public OpenAccountUseCase(NationalIdentityProvider nationalIdentityProvider, CustomerProvider customerProvider, BankAccountStorage bankAccountStorage, AccountIdGenerator accountIdGenerator, AccountNumberGenerator accountNumberGenerator, DateTimeService dateTimeService, EventBus eventBus) {
-        this.nationalIdentityProvider = nationalIdentityProvider;
-        this.customerProvider = customerProvider;
+    public OpenAccountUseCase(NationalIdentityGateway nationalIdentityGateway, CustomerGateway customerGateway, BankAccountStorage bankAccountStorage, AccountIdGenerator accountIdGenerator, AccountNumberGenerator accountNumberGenerator, DateTimeService dateTimeService, EventBus eventBus) {
+        this.nationalIdentityGateway = nationalIdentityGateway;
+        this.customerGateway = customerGateway;
         this.bankAccountStorage = bankAccountStorage;
         this.accountIdGenerator = accountIdGenerator;
         this.accountNumberGenerator = accountNumberGenerator;
@@ -37,13 +37,13 @@ public class OpenAccountUseCase implements Command.Handler<OpenAccountRequest, O
         var lastName = guard(request.getLastName()).againstNullOrWhitespace(ValidationMessages.LAST_NAME_EMPTY);
         var balance = guard(request.getBalance()).againstNegative(ValidationMessages.BALANCE_NEGATIVE);
 
-        var nationalIdentityNumberExists = nationalIdentityProvider.exists(nationalIdentityNumber);
+        var nationalIdentityNumberExists = nationalIdentityGateway.exists(nationalIdentityNumber);
 
         if(!nationalIdentityNumberExists) {
             throw new ValidationException(ValidationMessages.NATIONAL_IDENTITY_NUMBER_NONEXISTENT);
         }
 
-        var isBlacklisted = customerProvider.isBlacklisted(nationalIdentityNumber);
+        var isBlacklisted = customerGateway.isBlacklisted(nationalIdentityNumber);
 
         if(isBlacklisted) {
             throw new ValidationException(ValidationMessages.NATIONAL_IDENTITY_NUMBER_BLACKLISTED);

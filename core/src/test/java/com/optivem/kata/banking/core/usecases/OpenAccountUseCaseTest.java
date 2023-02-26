@@ -4,9 +4,9 @@ import an.awesome.pipelinr.Command;
 import com.optivem.kata.banking.adapter.driven.generation.fake.FakeAccountIdGenerator;
 import com.optivem.kata.banking.adapter.driven.generation.fake.FakeAccountNumberGenerator;
 import com.optivem.kata.banking.adapter.driven.messaging.fake.FakeEventBus;
+import com.optivem.kata.banking.adapter.driven.microservice.fake.FakeCustomerGateway;
 import com.optivem.kata.banking.adapter.driven.persistence.fake.FakeBankAccountStorage;
-import com.optivem.kata.banking.adapter.driven.thirdparty.fake.FakeCustomerProvider;
-import com.optivem.kata.banking.adapter.driven.thirdparty.fake.FakeNationalIdentityProvider;
+import com.optivem.kata.banking.adapter.driven.thirdparty.fake.FakeNationalIdentityGateway;
 import com.optivem.kata.banking.adapter.driven.time.fake.FakeDateTimeService;
 import com.optivem.kata.banking.core.common.builders.ports.driven.BankAccountDtoTestBuilder;
 import com.optivem.kata.banking.core.common.factories.CleanArchUseCaseFactory;
@@ -31,8 +31,8 @@ import static com.optivem.kata.banking.core.common.data.MethodSources.NEGATIVE_I
 import static com.optivem.kata.banking.core.common.data.MethodSources.NULL_EMPTY_WHITESPACE;
 
 class OpenAccountUseCaseTest {
-    private FakeNationalIdentityProvider nationalIdentityProvider;
-    private FakeCustomerProvider customerProvider;
+    private FakeNationalIdentityGateway nationalIdentityProvider;
+    private FakeCustomerGateway customerProvider;
     private FakeBankAccountStorage storage;
     private FakeAccountIdGenerator accountIdGenerator;
     private FakeAccountNumberGenerator accountNumberGenerator;
@@ -48,8 +48,8 @@ class OpenAccountUseCaseTest {
 
     @BeforeEach
     void init() {
-        this.nationalIdentityProvider = new FakeNationalIdentityProvider();
-        this.customerProvider = new FakeCustomerProvider();
+        this.nationalIdentityProvider = new FakeNationalIdentityGateway();
+        this.customerProvider = new FakeCustomerGateway();
         this.storage = new FakeBankAccountStorage();
         this.accountIdGenerator = new FakeAccountIdGenerator();
         this.accountNumberGenerator = new FakeAccountNumberGenerator();
@@ -65,7 +65,7 @@ class OpenAccountUseCaseTest {
     @ParameterizedTest
     @MethodSource
     void should_open_account_given_valid_request(String nationalIdentityNumber, String firstName, String lastName, int initialBalance, long generatedAccountId, String generatedAccountNumber, LocalDate openingDate) {
-        nationalIdentityProvider.setupExists(nationalIdentityNumber);
+        nationalIdentityProvider.setupExistent(nationalIdentityNumber);
         accountIdGenerator.setupNext(generatedAccountId);
         accountNumberGenerator.setupNext(generatedAccountNumber);
         dateTimeService.setupNow(LocalDateTime.of(openingDate, LocalTime.MIN));
@@ -133,7 +133,7 @@ class OpenAccountUseCaseTest {
     @Test
     void should_throw_exception_given_blacklisted_national_identity_number() {
         var nationalIdentityNumber = "NAT_1001";
-        nationalIdentityProvider.setupExists(nationalIdentityNumber);
+        nationalIdentityProvider.setupExistent(nationalIdentityNumber);
         customerProvider.setupBlacklisted(nationalIdentityNumber);
         accountIdGenerator.setupNext(1001L);
         accountNumberGenerator.setupNext("1-0-0-1");

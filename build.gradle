@@ -120,6 +120,7 @@ task coreTest {
 task fakeAdapterTest {
     dependsOn 'adapter-generation-fake:test'
     dependsOn 'adapter-messaging-fake:test'
+    dependsOn 'adapter-microservice-fake:test'
     dependsOn 'adapter-persistence-fake:test'
     dependsOn 'adapter-thirdparty-fake:test'
     dependsOn 'adapter-time-fake:test'
@@ -128,11 +129,12 @@ task fakeAdapterTest {
 task realAdapterTest {
     dependsOn 'adapter-generation-random:test'
     dependsOn 'adapter-messaging-inmemory:test'
+    dependsOn 'adapter-microservice-real:test'
     dependsOn 'adapter-persistence-jpa:test'
     dependsOn 'adapter-persistence-mongo:test'
     dependsOn 'adapter-persistence-redis:test'
     dependsOn 'adapter-restapi-spring:test'
-    dependsOn 'adapter-thirdparty-external:test'
+    dependsOn 'adapter-thirdparty-real:test'
     dependsOn 'adapter-time-system:test'
 }
 
@@ -160,6 +162,7 @@ task coreMutationTest {
 task fakeAdapterMutationTest {
     dependsOn 'adapter-generation-fake:pitest'
     dependsOn 'adapter-messaging-fake:pitest'
+    dependsOn 'adapter-microservice-fake:pitest'
     dependsOn 'adapter-persistence-fake:pitest'
     dependsOn 'adapter-thirdparty-fake:pitest'
     dependsOn 'adapter-time-fake:pitest'
@@ -168,11 +171,12 @@ task fakeAdapterMutationTest {
 task realAdapterMutationTest {
     dependsOn 'adapter-generation-random:pitest'
     dependsOn 'adapter-messaging-inmemory:pitest'
+    dependsOn 'adapter-microservice-real:pitest'
     dependsOn 'adapter-persistence-jpa:pitest'
     dependsOn 'adapter-persistence-mongo:pitest'
     dependsOn 'adapter-persistence-redis:pitest'
     dependsOn 'adapter-restapi-spring:pitest'
-    dependsOn 'adapter-thirdparty-external:pitest'
+    dependsOn 'adapter-thirdparty-real:pitest'
     dependsOn 'adapter-time-system:pitest'
 }
 

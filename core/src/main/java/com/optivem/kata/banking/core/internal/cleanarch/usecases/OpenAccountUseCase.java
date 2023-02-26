@@ -7,9 +7,9 @@ import com.optivem.kata.banking.core.internal.cleanarch.domain.accounts.BankAcco
 import com.optivem.kata.banking.core.internal.cleanarch.domain.accounts.BankAccountRepository;
 import com.optivem.kata.banking.core.internal.cleanarch.domain.common.events.AccountOpened;
 import com.optivem.kata.banking.core.internal.cleanarch.domain.common.events.common.EventPublisher;
-import com.optivem.kata.banking.core.ports.driven.CustomerProvider;
+import com.optivem.kata.banking.core.ports.driven.CustomerGateway;
 import com.optivem.kata.banking.core.ports.driven.DateTimeService;
-import com.optivem.kata.banking.core.ports.driven.NationalIdentityProvider;
+import com.optivem.kata.banking.core.ports.driven.NationalIdentityGateway;
 import com.optivem.kata.banking.core.ports.driver.accounts.openaccount.OpenAccountRequest;
 import com.optivem.kata.banking.core.ports.driver.accounts.openaccount.OpenAccountResponse;
 import com.optivem.kata.banking.core.ports.driver.exceptions.ValidationException;
@@ -20,17 +20,17 @@ import java.time.LocalDateTime;
 
 @Component
 public class OpenAccountUseCase implements Command.Handler<OpenAccountRequest, OpenAccountResponse> {
-    private final NationalIdentityProvider nationalIdentityProvider;
-    private final CustomerProvider customerProvider;
+    private final NationalIdentityGateway nationalIdentityGateway;
+    private final CustomerGateway customerGateway;
     private final BankAccountRepository bankAccountRepository;
     private final DateTimeService dateTimeService;
 
     private final EventPublisher eventPublisher;
 
 
-    public OpenAccountUseCase(NationalIdentityProvider nationalIdentityProvider, CustomerProvider customerProvider, BankAccountRepository bankAccountRepository, DateTimeService dateTimeService, EventPublisher eventPublisher) {
-        this.nationalIdentityProvider = nationalIdentityProvider;
-        this.customerProvider = customerProvider;
+    public OpenAccountUseCase(NationalIdentityGateway nationalIdentityGateway, CustomerGateway customerGateway, BankAccountRepository bankAccountRepository, DateTimeService dateTimeService, EventPublisher eventPublisher) {
+        this.nationalIdentityGateway = nationalIdentityGateway;
+        this.customerGateway = customerGateway;
         this.bankAccountRepository = bankAccountRepository;
         this.dateTimeService = dateTimeService;
         this.eventPublisher = eventPublisher;
@@ -43,7 +43,7 @@ public class OpenAccountUseCase implements Command.Handler<OpenAccountRequest, O
 
         var timestamp = dateTimeService.now();
 
-        var isBlacklisted = customerProvider.isBlacklisted(nationalIdentityNumber);
+        var isBlacklisted = customerGateway.isBlacklisted(nationalIdentityNumber);
 
         if(isBlacklisted) {
             throw new ValidationException(ValidationMessages.NATIONAL_IDENTITY_NUMBER_BLACKLISTED);
@@ -52,7 +52,7 @@ public class OpenAccountUseCase implements Command.Handler<OpenAccountRequest, O
         var bankAccount = createBankAccount(nationalIdentityNumber, accountHolderName, balance, timestamp);
 
         // TODO: VC: Value object for national identity number
-        var exists = nationalIdentityProvider.exists(nationalIdentityNumber);
+        var exists = nationalIdentityGateway.exists(nationalIdentityNumber);
         if(!exists) {
             throw new ValidationException(ValidationMessages.NATIONAL_IDENTITY_NUMBER_NONEXISTENT);
         }

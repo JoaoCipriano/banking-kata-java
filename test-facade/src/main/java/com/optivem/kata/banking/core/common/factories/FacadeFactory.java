@@ -3,9 +3,9 @@ package com.optivem.kata.banking.core.common.factories;
 import com.optivem.kata.banking.adapter.driven.generation.fake.FakeAccountIdGenerator;
 import com.optivem.kata.banking.adapter.driven.generation.fake.FakeAccountNumberGenerator;
 import com.optivem.kata.banking.adapter.driven.messaging.fake.FakeEventBus;
+import com.optivem.kata.banking.adapter.driven.microservice.fake.FakeCustomerGateway;
 import com.optivem.kata.banking.adapter.driven.persistence.fake.FakeBankAccountStorage;
-import com.optivem.kata.banking.adapter.driven.thirdparty.fake.FakeCustomerProvider;
-import com.optivem.kata.banking.adapter.driven.thirdparty.fake.FakeNationalIdentityProvider;
+import com.optivem.kata.banking.adapter.driven.thirdparty.fake.FakeNationalIdentityGateway;
 import com.optivem.kata.banking.adapter.driven.time.fake.FakeDateTimeService;
 import com.optivem.kata.banking.core.Facade;
 
@@ -26,11 +26,11 @@ public class FacadeFactory {
     private static final LocalDateTime DATE_TIME_2 = LocalDateTime.of(2022, 4, 15, 9, 1);
 
     public Facade create() {
-        var nationalIdentityProvider = new FakeNationalIdentityProvider();
-        nationalIdentityProvider.setupExists(NATIONAL_IDENTITY_NUMBER_1);
-        nationalIdentityProvider.setupExists(NATIONAL_IDENTITY_NUMBER_2);
+        var nationalIdentityProvider = new FakeNationalIdentityGateway();
+        nationalIdentityProvider.setupExistent(NATIONAL_IDENTITY_NUMBER_1);
+        nationalIdentityProvider.setupExistent(NATIONAL_IDENTITY_NUMBER_2);
 
-        var customerProvider = new FakeCustomerProvider();
+        var customerProvider = new FakeCustomerGateway();
 
         var accountIdGenerator = new FakeAccountIdGenerator();
         accountIdGenerator.setupNext(ACCOUNT_ID_1);
