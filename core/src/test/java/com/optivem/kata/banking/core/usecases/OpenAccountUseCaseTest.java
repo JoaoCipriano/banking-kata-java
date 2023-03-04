@@ -10,6 +10,7 @@ import com.optivem.kata.banking.adapter.driven.thirdparty.fake.FakeNationalIdent
 import com.optivem.kata.banking.adapter.driven.time.fake.FakeDateTimeService;
 import com.optivem.kata.banking.core.common.builders.ports.driven.BankAccountDtoTestBuilder;
 import com.optivem.kata.banking.core.common.factories.CleanArchUseCaseFactory;
+import com.optivem.kata.banking.core.ports.driven.BankAccountDto;
 import com.optivem.kata.banking.core.ports.driven.events.AccountOpenedDto;
 import com.optivem.kata.banking.core.ports.driver.accounts.openaccount.OpenAccountRequest;
 import com.optivem.kata.banking.core.ports.driver.accounts.openaccount.OpenAccountResponse;
@@ -23,12 +24,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.optivem.kata.banking.core.common.Verifications.verifyThat;
 import static com.optivem.kata.banking.core.common.builders.requests.OpenAccountRequestBuilder.openAccountRequest;
 import static com.optivem.kata.banking.core.common.data.MethodSources.NEGATIVE_INTEGERS;
 import static com.optivem.kata.banking.core.common.data.MethodSources.NULL_EMPTY_WHITESPACE;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class OpenAccountUseCaseTest {
     private FakeNationalIdentityGateway nationalIdentityProvider;
@@ -100,7 +103,7 @@ class OpenAccountUseCaseTest {
                 .build();
 
         verifyThat(useCase).withRequest(request).shouldReturnResponse(expectedResponse);
-        storage.shouldContain(expectedBankAccount);
+        shouldContain(expectedBankAccount);
         eventBus.shouldHavePublishedExactly(expectedEvent);
     }
 
@@ -175,4 +178,12 @@ class OpenAccountUseCaseTest {
 
         verifyThat(useCase).withRequest(request).shouldThrowValidationException(ValidationMessages.BALANCE_NEGATIVE);
     }
+
+    public void shouldContain(BankAccountDto bankAccount) {
+        var accountNumber = bankAccount.getAccountNumber();
+        var retrievedBankAccount = storage.find(accountNumber);
+        assertThat(retrievedBankAccount).isNotEmpty();
+        assertThat(retrievedBankAccount).usingRecursiveComparison().isEqualTo(Optional.of(bankAccount));
+    }
+
 }

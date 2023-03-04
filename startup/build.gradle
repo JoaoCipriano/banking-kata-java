@@ -11,8 +11,9 @@ dependencies {
     implementation project(':adapter-microservice-real')
     implementation project(':adapter-thirdparty-fake')
     implementation project(':adapter-thirdparty-real')
-
     testImplementation project(':adapter-base')
+
+    testImplementation project(path: ':adapter-base', configuration: 'testClasses')
     testImplementation project(':adapter-persistence-jpa')
     testImplementation project(':test-fixtures')
 }

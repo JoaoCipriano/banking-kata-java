@@ -1,9 +1,13 @@
 package com.optivem.kata.banking.adapter.driven.persistence.fake;
 
-import com.optivem.kata.banking.adapter.driven.persistence.fake.FakeBankAccountStorage;
 import com.optivem.kata.banking.core.common.builders.ports.driven.BankAccountDtoTestBuilder;
+import com.optivem.kata.banking.core.ports.driven.BankAccountDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 // TODO: VC: Incorporate this into main test later
 class FakeBankAccountStorageExtendedTest {
@@ -11,7 +15,7 @@ class FakeBankAccountStorageExtendedTest {
     private FakeBankAccountStorage storage;
 
     @BeforeEach
-    private void init() {
+    void init() {
         this.storage = new FakeBankAccountStorage();
     }
 
@@ -19,7 +23,7 @@ class FakeBankAccountStorageExtendedTest {
     void should_return_empty_result_when_account_number_does_not_exist() {
         var accountNumber = "GB36BARC20038032622823";
 
-        storage.shouldNotContain(accountNumber);
+        shouldNotContain(accountNumber);
     }
 
     @Test
@@ -31,7 +35,7 @@ class FakeBankAccountStorageExtendedTest {
 
         storage.add(bankAccount);
 
-        storage.shouldContain(bankAccount);
+        shouldContain(bankAccount);
     }
 
     @Test
@@ -56,7 +60,7 @@ class FakeBankAccountStorageExtendedTest {
 
         storage.update(bankAccount);
 
-        storage.shouldContain(expectedUpdatedBankAccount);
+        shouldContain(expectedUpdatedBankAccount);
     }
 
     @Test
@@ -77,7 +81,7 @@ class FakeBankAccountStorageExtendedTest {
 
         bankAccount.setBalance(20);
 
-        storage.shouldContain(expectedBankAccount);
+        shouldContain(expectedBankAccount);
     }
 
     @Test
@@ -100,7 +104,7 @@ class FakeBankAccountStorageExtendedTest {
 
         retrievedBankAccount.setBalance(20);
 
-        storage.shouldContain(expectedBankAccount);
+        shouldContain(expectedBankAccount);
     }
 
     @Test
@@ -125,7 +129,7 @@ class FakeBankAccountStorageExtendedTest {
 
         retrievedBankAccount.setBalance(20);
 
-        storage.shouldContain(expectedBankAccount);
+        shouldContain(expectedBankAccount);
     }
 
 
@@ -161,5 +165,17 @@ class FakeBankAccountStorageExtendedTest {
 
         // TODO: VC: Bring back
         // verifyThat(() -> storage.update(bankAccount)).shouldThrowRepositoryException(RepositoryMessages.REPOSITORY_CANNOT_UPDATE_NON_EXISTENT);
+    }
+
+    public void shouldContain(BankAccountDto bankAccount) {
+        var accountNumber = bankAccount.getAccountNumber();
+        var retrievedBankAccount = storage.find(accountNumber);
+        assertThat(retrievedBankAccount).isNotEmpty();
+        assertThat(retrievedBankAccount).usingRecursiveComparison().isEqualTo(Optional.of(bankAccount));
+    }
+
+    public void shouldNotContain(String accountNumber) {
+        var retrievedBankAccount = storage.find(accountNumber);
+        assertThat(retrievedBankAccount).isEmpty();
     }
 }
