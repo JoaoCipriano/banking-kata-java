@@ -3,6 +3,8 @@
 [![CI](https://github.com/valentinacupac/banking-kata-java/actions/workflows/ci.yaml/badge.svg)](https://github.com/valentinacupac/banking-kata-java/actions/workflows/ci.yaml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JoaoCipriano_banking-kata-java&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=JoaoCipriano_banking-kata-java)
 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=JoaoCipriano_banking-kata-java)
+
 ## Overview
 
 This project illustrates TDD & Clean Architecture implementation in Java, showing the Use Case Driven Development
