@@ -23,7 +23,7 @@ sonarqube {
         property "sonar.issue.ignore.multicriteria.S5960.ruleKey", "java:S5960"
         property "sonar.coverage.exclusions",
                 "**/factories/*," +
-                "**/*Builder"
+                "**/*Builder.java"
     }
 }
 
